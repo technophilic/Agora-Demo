@@ -43,15 +43,15 @@ let client = AgoraRTC.createClient({
 
 // Client Setup
 // Defines a client for Real Time Communication
-client.init("5f8c5168a0904da2847c56cf87dd596e",() => console.log("AgoraRTC client initialized") ,handleFail);
+client.init("<---Your AppId here--->",() => console.log("AgoraRTC client initialized") ,handleFail);
 
 // The client joins the channel
-client.join(null,"dsc-video-demo",null, (uid)=>{
+client.join(null,"any-channel",null, (uid)=>{
 
     // Stream object associated with your web cam is initialized
     let localStream = AgoraRTC.createStream({
         streamID: uid,
-        audio: false,
+        audio: true,
         video: true,
         screen: false
     });
@@ -65,19 +65,19 @@ client.join(null,"dsc-video-demo",null, (uid)=>{
         //Publishes the stream to the channel
         client.publish(localStream, handleFail);
 
-        //When a stream is added to a channel
-        client.on('stream-added', function (evt) {
-            client.subscribe(evt.stream, handleFail);
-        });
-        //When you subscribe to a stream
-        client.on('stream-subscribed', function (evt) {
-            let stream = evt.stream;
-            addVideoStream(stream.getId());
-            stream.play(stream.getId());
-        });
-        //When a person is removed from the stream
-        client.on('stream-removed',removeVideoStream);
-
     },handleFail);
 
 },handleFail);
+//When a stream is added to a channel
+client.on('stream-added', function (evt) {
+    client.subscribe(evt.stream, handleFail);
+});
+//When you subscribe to a stream
+client.on('stream-subscribed', function (evt) {
+    let stream = evt.stream;
+    addVideoStream(stream.getId());
+    stream.play(stream.getId());
+});
+//When a person is removed from the stream
+client.on('stream-removed',removeVideoStream);
+client.on('peer-leave',removeVideoStream);
